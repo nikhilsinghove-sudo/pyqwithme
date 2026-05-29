@@ -1,0 +1,39 @@
+# Dependency directories
+node_modules/
+**/node_modules/
+
+# Environment variables & secrets (CRITICAL: Never upload these!)
+.env
+.env.development
+.env.production
+.env.local
+**/.env
+**/.env.development
+**/.env.production
+**/.env.local
+
+# Build outputs
+dist/
+**/dist/
+build/
+**/build/
+
+# Local uploads and temporary media files
+uploads/
+**/uploads/
+*.pdf
+
+# Logs & temp files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor & System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Agent files
+.gemini/
