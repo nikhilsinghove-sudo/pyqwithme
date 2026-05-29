@@ -8,11 +8,10 @@ export function Navbar() {
   const dispatch = useDispatch();
   const darkMode = useSelector((state) => state.ui.darkMode);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const mobileRef = useRef(null);
 
   useEffect(() => {
-    function onDoc(e) {
-      if (mobileRef.current && !mobileRef.current.contains(e.target)) setMobileMenuOpen(false);
+    function onDoc() {
+      setMobileMenuOpen(false);
     }
     document.addEventListener("click", onDoc);
     return () => document.removeEventListener("click", onDoc);
@@ -25,7 +24,7 @@ export function Navbar() {
     `block rounded-md px-4 py-2.5 text-base font-semibold transition ${isActive ? "bg-brand-50 text-brand-700 dark:bg-slate-800 dark:text-white" : "text-slate-600 hover:bg-slate-100 hover:text-brand-600 dark:text-slate-300 dark:hover:bg-slate-800"}`;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90" ref={mobileRef}>
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
       <div className="container-page flex h-16 items-center justify-between gap-3">
         <Link to="/" className="text-xl font-bold text-brand-600">PYQwithMe</Link>
         
@@ -58,7 +57,10 @@ export function Navbar() {
           </button>
           
           <button
-            onClick={() => setMobileMenuOpen((o) => !o)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setMobileMenuOpen((o) => !o);
+            }}
             className="focus-ring rounded-md p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
             aria-label="Toggle navigation menu"
           >
@@ -69,7 +71,10 @@ export function Navbar() {
 
       {/* Mobile Navigation Dropdown */}
       {mobileMenuOpen && (
-        <div className="border-t border-slate-100 bg-white p-3 shadow-lg dark:border-slate-800 dark:bg-slate-950 md:hidden animate-scale-up">
+        <div 
+          onClick={(e) => e.stopPropagation()} 
+          className="border-t border-slate-100 bg-white p-3 shadow-lg dark:border-slate-800 dark:bg-slate-950 md:hidden"
+        >
           <nav className="flex flex-col gap-1">
             <NavLink to="/" className={mobileNavClass} onClick={() => setMobileMenuOpen(false)} end>Home</NavLink>
             <NavLink to="/search" className={mobileNavClass} onClick={() => setMobileMenuOpen(false)}><Search className="mr-2 inline h-4 w-4" />Search</NavLink>
