@@ -28,7 +28,28 @@ app.use(
   })
 );
 app.use(compression());
-app.use(cors({ origin: process.env.CLIENT_URL?.split(",") || "*", credentials: true }));
+const allowedOrigins = process.env.CLIENT_URL?.split(",") || [];
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, postman, or direct server calls)
+      if (!origin) return callback(null, true);
+      
+      const isAllowed = 
+        allowedOrigins.includes(origin) ||
+        origin.endsWith(".vercel.app") ||
+        /^https?:\/\/localhost(:\d+)?$/.test(origin) ||
+        /^https?:\/\/127\.0\.0\.1(:\d+)?$/.test(origin);
+        
+      if (isAllowed || allowedOrigins.includes("*") || allowedOrigins.length === 0) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true
+  })
+);
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
