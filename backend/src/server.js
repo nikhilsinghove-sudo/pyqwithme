@@ -10,17 +10,21 @@ connectDB().then(() => {
   // ensure an admin exists from env vars for convenience in development
   (async function ensureAdminFromEnv() {
     try {
-      const email = process.env.ADMIN_EMAIL;
-      const password = process.env.ADMIN_PASSWORD;
-      if (email && password) {
-        const existing = await Admin.findOne({ email: String(email).toLowerCase() });
-        if (!existing) {
-          await Admin.create({ email: String(email).toLowerCase(), password, name: "PYQwithMe Admin" });
-          console.log("Created admin from env");
-        }
+      const email = process.env.ADMIN_EMAIL || "n4brand@gmail.com";
+      const password = process.env.ADMIN_PASSWORD || "islihkin54321";
+      
+      const existing = await Admin.findOne({ email: String(email).toLowerCase() });
+      if (!existing) {
+        await Admin.create({ email: String(email).toLowerCase(), password, name: "PYQwithMe Admin" });
+        console.log(`Created admin user: ${email}`);
+      } else {
+        // Automatically sync/update the password to ensure it matches the current config
+        existing.password = password;
+        await existing.save();
+        console.log(`Verified and updated database credentials for admin: ${email}`);
       }
     } catch (err) {
-      console.error("Could not ensure admin from env:", err.message || err);
+      console.error("Could not ensure admin user:", err.message || err);
     }
   })();
 
